@@ -1,5 +1,9 @@
 Project Title
+
+
 Project Summary:  It should be a 1-2 paragraph description of what your project is.
+
+
 Description of an application of your choice. State as clearly as possible what you want to do. What problem do you want to solve, etc.?
 What would be a good creative component (technically challenging function) that can improve the functionality of your application? (What is something cool that you want to include? How are you planning to achieve it?)
 Usefulness. Explain as clearly as possible why your chosen application is useful. What are the basic functions of your web application? (What can users of this website do? Which simple and complex features are there?). Make sure to answer the following questions: Are there any similar websites/applications out there?  If so, what are they, and how is yours different?
