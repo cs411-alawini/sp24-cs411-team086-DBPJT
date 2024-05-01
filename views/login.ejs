@@ -1,0 +1,64 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Weather x Wardrobe</title>
+    <link rel="stylesheet" href="https://coscdn.htmlpage.cn/vip-tpl/assets/css/plugins.css"/>
+    <link rel="stylesheet" href="https://coscdn.htmlpage.cn/vip-tpl/assets/css/style.css"/> 
+    <style>
+        body {
+          background-image: url('https://blogs.illinois.edu/files/6758/1918373830/218457.jpg');
+            background-size: cover;
+            background-attachment: fixed;
+            background-position: center center;
+            background-blend-mode: overlay;
+            background-color: rgba(0, 0, 0, 0.5); 
+        }
+
+        .panel {
+          min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white; 
+      
+        }
+        h2 {
+            color: white;  
+        }
+
+        input, button {
+            margin-top: 10px;
+        }
+
+        button {
+            background-color: #007bff;  
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div id="default-editor-page__placeholder" class="panel">
+        <h2 align="center">Weather x Wardrobe</h2>
+        <p align="center">your personal daily assistant</p>
+        
+        <form action="/login" method="post" style="text-align: center;">
+            <div>Username</div>
+            <input type="text" name="username" required>
+      
+            <div>Password</div>
+            <input type="password" name="password" required>
+      
+            <div class="button-container" style="margin-top: 10px;">
+                <button type="submit" class="btn btn-lg btn-primary rounded-pill mx-1">Log In</button>
+                <button onclick="window.location.href='/register';" class="btn btn-lg btn-secondary rounded-pill mx-1">Register</button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

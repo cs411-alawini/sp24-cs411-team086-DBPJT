@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weather Map</title>
+  <!-- Include Leaflet.js library -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <style>
+    /* Set map container size */
+    #map {
+      width: 100%;
+      height: 400px; /* Adjust height as needed */
+    }
+
+    /* Navigation bar styles */
+    nav {
+      background-color: #333;
+      color: #fff;
+      padding: 10px 0;
+      text-align: center;
+      margin-bottom: 20px; /* Add margin to separate navigation bar from map */
+    }
+
+    nav ul {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    nav ul li {
+      display: inline;
+      margin-right: 20px;
+    }
+
+    nav ul li a {
+      text-decoration: none;
+      color: #fff;
+      font-size: 18px; /* Increase font size */
+      font-weight: bold; /* Make font bold */
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Custom font stack */
+    }
+
+    nav ul li a:hover {
+      color: #8ba3dd;
+    }
+
+    /* Style for active page */
+    nav ul li a.active {
+      color: #8ba3dd;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation bar -->
+  <nav>
+    <ul>
+      <!-- Add class "active" to the current page -->
+      <li><a href="/weather" class="active">Weather</a></li>
+      <li><a href="/searchbar">Search Bar</a></li>
+      <li><a href="/graph">Graph</a></li>
+      <li><a href="/apparel">Apparel</a></li>
+      <li><a href="/outfits">Outfits</a></li>
+    </ul>
+  </nav>
+
+  <h1>Weather Map</h1>
+
+  <!-- Map container -->
+  <div id="map"></div>
+
+  <script>
+
+    console.log("Initializing Map...");
+    var map = L.map('map').setView([41.8, -87.6], 3.5); // Set initial map center and zoom level
+
+    // Add OpenStreetMap tile layer
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+    }).addTo(map);
+
+    // Fetch city data from server and add markers
+    fetch('/api/cities')
+      .then(response => response.json())
+      .then(data => {
+        data.forEach(city => {
+          // Create a smaller icon for the marker
+          var smallIcon = L.icon({
+            iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
+            iconSize: [10, 20], // Adjust the width and height as needed
+            iconAnchor: [8, 20], // Adjust the anchor position if necessary
+          });
+
+          // Add marker with the smaller icon
+          L.marker([city.latitude, city.longitude], { icon: smallIcon }).addTo(map)
+            .bindPopup(city.cityName);
+        });
+      })
+      .catch(error => {
+        console.error('Error fetching city data:', error);
+      });
+
+    console.log("Map initialized successfully!");
+  </script>
+</body>
+</html>

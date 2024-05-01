@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Temperature Graph</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    nav {
+      background-color: #333;
+      color: #fff;
+      padding: 10px 0;
+      text-align: center;
+    }
+
+    nav ul {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    nav ul li {
+      display: inline;
+      margin-right: 20px;
+    }
+
+    nav ul li a {
+      text-decoration: none;
+      color: #fff;
+      font-size: 18px; 
+      font-weight: bold; 
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+    }
+
+    nav ul li a:hover {
+      color: #8ba3dd;
+    }
+
+    nav ul li a.active {
+      color: #8ba3dd;
+      text-decoration: underline;
+    }
+
+    #chartContainer {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-evenly; 
+    }
+
+    #chartContainer canvas {
+      width: calc(50% - 20px); 
+      height: auto; 
+      max-width: 400px; 
+      max-height: 200px; 
+      margin: 10px; 
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <ul>
+      <li><a href="/weather">Weather</a></li>
+      <li><a href="/searchbar">Search Bar</a></li>
+      <li><a href="/graph" class="active">Graph</a></li>
+      <li><a href="/apparel">Apparel</a></li>
+      <li><a href="/outfits">Outfits</a></li>
+    </ul>
+  </nav>
+
+  <h1>Temperature Graphs</h1>
+
+  <div id="chartContainer"></div>
+
+  <script>
+
+    function fetchTemperatureData(cityIDs) {
+      const processedCities = new Set(); // Track processed city IDs
+      
+      cityIDs.forEach(cityID => {
+        if (!processedCities.has(cityID)) {
+          processedCities.add(cityID); // Add the city ID to processed cities set
+    
+          fetch(`/api/temperature?cityID=${cityID}`)
+            .then(response => response.json())
+            .then(data => {
+              const cityName = data.length > 0 ? data[0].CityName : "Unknown City";
+              console.log(cityName);
+              const dates = data.map(entry => entry.date);
+              const temperatures = data.map(entry => entry.Avg_temp);
+              
+              createTemperatureChart(cityID, cityName, dates, temperatures);
+            })
+            .catch(error => {
+              console.error(`Error fetching temperature data for cityID ${cityID}:`, error);
+            });
+        }
+      });
+    }
+    
+
+    function createTemperatureChart(cityID, cityName, dates, temperatures) {
+      var canvas = document.createElement('canvas');
+      canvas.id = `temperatureChart-${cityID}`;
+      document.getElementById('chartContainer').appendChild(canvas);
+    
+      var ctx = canvas.getContext('2d');
+    
+      var temperatureChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: dates,
+          datasets: [{
+            label: `Average Temperature for ${cityName} (°C)`,
+            data: temperatures,
+            backgroundColor: 'rgba(255, 99, 132, 0.2)',
+            borderColor: 'rgba(255, 99, 132, 1)',
+            borderWidth: 1
+          }]
+        },
+        options: {
+          scales: {
+            y: {
+              beginAtZero: false,
+              title: {
+                display: true,
+                text: 'Temperature (°C)'
+              }
+            }
+          },
+          plugins: {
+            tooltip: {
+              enabled: true,
+              mode: 'index',
+              intersect: false
+            },
+            zoom: {
+              zoom: {
+                wheel: {
+                  enabled: true
+                },
+                pinch: {
+                  enabled: true
+                },
+                mode: 'xy'
+              },
+              pan: {
+                enabled: true,
+                mode: 'xy'
+              }
+            }
+          }
+        }
+      });
+    }
+    
+
+    const subscribedCities = <%- JSON.stringify(subscribedCities) %>;
+    fetchTemperatureData(subscribedCities); 
+   </script>
+</body>
+</html>

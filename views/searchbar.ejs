@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>City Search</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        input[type="text"], button {
+            padding: 10px;
+            margin: 10px 0;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        button {
+            background-color: #5cb85c;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #4cae4c;
+        }
+        #results {
+            margin-top: 20px;
+            padding: 20px;
+            background: white;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        #results div {
+            margin-bottom: 10px;
+            padding: 10px;
+            background: #e9e9e9;
+            border-radius: 4px;
+        }
+        nav {
+            background-color: #333;
+            color: #fff;
+            padding: 10px 0;
+            text-align: center;
+        }
+
+        nav ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        nav ul li {
+            display: inline;
+            margin-right: 20px;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: #fff;
+            font-size: 18px;
+            font-weight: bold;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        nav ul li a:hover {
+            color: #8ba3dd;
+        }
+
+        nav ul li a.active {
+            color: #8ba3dd;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+<nav>
+    <ul>
+        <li><a href="/weather">Weather</a></li>
+        <li><a href="/searchbar" class="active">Search Bar</a></li>
+        <li><a href="/graph">Graph</a></li>
+        <li><a href="/apparel">Apparel</a></li>
+        <li><a href="/outfits">Outfits</a></li>
+    </ul>
+</nav>
+
+<input type="text" id="searchQuery" placeholder="Enter city name...">
+<button onclick="searchCity()">Search</button>
+<div id="results"></div>
+
+<script>
+    let cityDictionary = {};
+
+    //fetch the city dictionary from the server and iterate through the dictionary and search through results as such
+    function loadCityDictionary() {
+        fetch('/api/getAllCities')
+        .then(response => response.json())
+        .then(data => {
+            cityDictionary = data;
+            console.log("City dictionary loaded", cityDictionary);
+        })
+        .catch(error => console.error('Failed to load city dictionary:', error));
+    }
+
+    function searchCity() {
+        const query = document.getElementById('searchQuery').value.trim();
+        const resultsDiv = document.getElementById('results');
+        resultsDiv.innerHTML = ''; // Clear previous results
+        console.log("HELLO");
+        var userID = 1; //req.session.userID
+        //var blah = req.session.userID;
+        console.log("HELLO");
+        //console.log(blah);
+        Object.entries(cityDictionary).forEach(([cityID, cityInfo]) => {
+            if (cityInfo.cityName.toLowerCase() === query.toLowerCase()) {
+                console.log("HELLO");
+                const div = document.createElement('div');
+                div.innerHTML = `City ID: ${cityID}, City Name: ${cityInfo.cityName} , State :${cityInfo.State}
+                <button onclick="saveCity('${cityID}', '${userID}')">Save to User</button>`;
+                resultsDiv.appendChild(div);
+            }
+        });
+        // Handle no results found
+        if (resultsDiv.innerHTML === '') {
+            resultsDiv.innerHTML = '<div>No exact match found.</div>';
+        }
+    }
+
+    function saveCity(cityID, userID){
+        fetch('/api/saveCity',{
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ city_id: cityID, date: "2016-01-03 00:00:00", user_id: userID })
+        })
+        .then(response => response.json())
+        .then(data => {
+            alert('City updated to usersubscribelist');
+        })
+        .catch(error => console.error('Error updating usersubscribelist: ', error));
+    }
+    // Load the dictionary when the page is ready
+    window.onload = loadCityDictionary;
+  </script>
+
+
+</body>
+</html>
