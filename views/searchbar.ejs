@@ -101,33 +101,37 @@
         .then(response => response.json())
         .then(data => {
             cityDictionary = data;
-            console.log("City dictionary loaded", cityDictionary);
+            // console.log("City dictionary loaded", cityDictionary);
         })
         .catch(error => console.error('Failed to load city dictionary:', error));
     }
 
-    function searchCity() {
+    async function searchCity() {
         const query = document.getElementById('searchQuery').value.trim();
         const resultsDiv = document.getElementById('results');
         resultsDiv.innerHTML = ''; // Clear previous results
         console.log("HELLO");
         var userID = 1; //req.session.userID
+        var resultsofs
         //var blah = req.session.userID;
         console.log("HELLO");
         //console.log(blah);
-        Object.entries(cityDictionary).forEach(([cityID, cityInfo]) => {
-            if (cityInfo.cityName.toLowerCase() === query.toLowerCase()) {
-                console.log("HELLO");
-                const div = document.createElement('div');
-                div.innerHTML = `City ID: ${cityID}, City Name: ${cityInfo.cityName} , State :${cityInfo.State}
-                <button onclick="saveCity('${cityID}', '${userID}')">Save to User</button>`;
+        console.log('query:'+query)
+        resp=await fetch('/api/keywordsearch/'+query,{
+            method: 'POST',
+            body: JSON.stringify({ cityname: query.toLowerCase()})
+        })
+        .then(response => response.json())
+        
+
+        console.log('search res:'+resp)
+        resp.forEach(function(obj) {
+            const div = document.createElement('div');
+                div.innerHTML = `City ID: ${obj.cityID}, City Name: ${obj.cityName} , State :${obj.State}
+                <button onclick="saveCity('${obj.cityID}', '${obj.userID}')">Save to User</button>`;
                 resultsDiv.appendChild(div);
-            }
-        });
-        // Handle no results found
-        if (resultsDiv.innerHTML === '') {
-            resultsDiv.innerHTML = '<div>No exact match found.</div>';
-        }
+});
+
     }
 
     function saveCity(cityID, userID){
